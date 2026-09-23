@@ -11,10 +11,33 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=22" />
+    <link rel="stylesheet" href="styles.css?v=29" />
   </head>
   <body>
     <div class="page-shell">
+      <nav class="feature-nav dashboard-nav" aria-label="Główna nawigacja">
+        <button
+          class="mobile-nav-toggle"
+          type="button"
+          aria-label="Otwórz menu"
+          aria-expanded="false"
+          aria-controls="dashboard-links"
+        >
+          <span aria-hidden="true">&#9776;</span>
+        </button>
+        <div id="dashboard-links" class="dashboard-nav__links">
+          <a href="#o-mnie">O mnie</a>
+          <a href="#galeria">Galeria</a>
+          <a href="#wspolprace">Współpr.</a>
+          <a href="#kontakt">Kontakt</a>
+          <a href="#ankieta">Ankieta</a>
+          <a href="#inspiracje">Inspir.</a>
+          <a href="#polecane">Polecane</a>
+          <a href="#posty">Posty</a>
+          <a href="#ciekawostki">Ciekawostki</a>
+        </div>
+      </nav>
+
       <header class="hero">
         <div class="hero-content">
           <p class="eyebrow">Oficjalna wizytówka</p>
@@ -33,6 +56,7 @@
               >Odwiedź Instagram</a
             >
             <a class="button secondary" href="#o-mnie">O mnie</a>
+            <a class="button secondary" href="#posty">Posty</a>
             <a class="button secondary" href="polecane-tytuly.html"
               >Polecane tytuły</a
             >
@@ -48,7 +72,10 @@
               target="_blank"
               rel="noreferrer"
             >
-              <img src="Instagram.jpg" alt="Otwórz profil @sz_sylwia14 na Instagramie" />
+              <img
+                src="Instagram.jpg"
+                alt="Otwórz profil @sz_sylwia14 na Instagramie"
+              />
             </a>
           </div>
         </div>
@@ -104,7 +131,244 @@
           </div>
         </section>
 
-        <section class="section letter-section" aria-labelledby="letter-title">
+        <section
+          id="galeria"
+          class="section feature-section gallery-section"
+          aria-labelledby="gallery-title"
+        >
+          <div class="feature-heading">
+            <div>
+              <p class="eyebrow">Kadry i estetyka</p>
+              <h2 id="gallery-title">Galeria inspiracji</h2>
+            </div>
+            <div class="filter-tabs" role="group" aria-label="Filtr galerii">
+              <button
+                class="filter-tab is-active"
+                type="button"
+                data-gallery-filter="all"
+              >
+                Wszystko
+              </button>
+              <button
+                class="filter-tab"
+                type="button"
+                data-gallery-filter="style"
+              >
+                Styl
+              </button>
+              <button
+                class="filter-tab"
+                type="button"
+                data-gallery-filter="space"
+              >
+                Wnętrza
+              </button>
+            </div>
+          </div>
+          <div class="gallery-grid">
+            <figure
+              class="gallery-card gallery-card--large"
+              data-gallery-item="style"
+            >
+              <img
+                src="Sylwia.jpg"
+                alt="Sylwia Szyja w inspirującej stylizacji"
+                loading="lazy"
+              />
+              <figcaption>Styl, który opowiada własną historię</figcaption>
+            </figure>
+            <figure
+              class="gallery-card gallery-card--instagram"
+              data-gallery-item="space"
+            >
+              <img
+                src="Instagram.jpg"
+                alt="Profil Instagram Sylwii"
+                loading="lazy"
+              />
+              <figcaption>Codzienność z dobrym kadrem</figcaption>
+            </figure>
+            <figure
+              class="gallery-card gallery-card--quote"
+              data-gallery-item="style"
+            >
+              <span aria-hidden="true">✦</span>
+              <figcaption>Piękno zaczyna się od uważności.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section
+          id="inspiracje"
+          class="section feature-section daily-inspiration-section"
+          aria-labelledby="inspiration-title"
+        >
+          <div class="daily-inspiration-card">
+            <p class="eyebrow">Inspiracja dnia</p>
+            <h2 id="inspiration-title" data-daily-inspiration></h2>
+            <p data-daily-inspiration-source></p>
+          </div>
+        </section>
+
+        <section
+          id="wspolprace"
+          class="section feature-section collaborations-section"
+          aria-labelledby="collaborations-title"
+        >
+          <div class="feature-heading">
+            <div>
+              <p class="eyebrow">Razem tworzymy więcej</p>
+              <h2 id="collaborations-title">Współprace</h2>
+            </div>
+          </div>
+          <div class="collaboration-grid">
+            <article class="collaboration-card">
+              <span>01</span>
+              <h3>Moda i dodatki</h3>
+              <p>
+                Estetyczne kadry, naturalne rekomendacje i styl dopasowany do
+                codzienności.
+              </p>
+            </article>
+            <article class="collaboration-card">
+              <span>02</span>
+              <h3>Wnętrza i lifestyle</h3>
+              <p>
+                Pomysły na piękną przestrzeń, detale i atmosferę, którą chce się
+                zapamiętać.
+              </p>
+            </article>
+            <article class="collaboration-card">
+              <span>03</span>
+              <h3>Marki z charakterem</h3>
+              <p>
+                Współprace oparte na zaufaniu, dobrym produkcie i autentycznej
+                historii.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section
+          id="kontakt"
+          class="section feature-section contact-section"
+          aria-labelledby="contact-title"
+        >
+          <div class="contact-layout">
+            <div>
+              <p class="eyebrow">Dla marek i obserwatorów</p>
+              <h2 id="contact-title">Porozmawiajmy</h2>
+              <p>
+                Napisz kilka słów o swoim pomyśle. Formularz otworzy gotową
+                wiadomość e-mail.
+              </p>
+            </div>
+            <form class="contact-form" data-contact-form>
+              <label class="account-field"
+                >Imię lub marka<input type="text" name="name" required
+              /></label>
+              <label class="account-field"
+                >E-mail<input type="email" name="email" required
+              /></label>
+              <label class="account-field"
+                >Wiadomość<textarea name="message" rows="5" required></textarea>
+              </label>
+              <p class="form-status" data-contact-status role="status"></p>
+              <button class="button primary" type="submit">
+                Przygotuj wiadomość
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section
+          id="ankieta"
+          class="section feature-section poll-section"
+          aria-labelledby="poll-title"
+        >
+          <div class="poll-card">
+            <p class="eyebrow">Głos obserwatorów</p>
+            <h2 id="poll-title">Co chcesz zobaczyć następnym razem?</h2>
+            <div class="poll-options" data-poll-options>
+              <button type="button" data-poll-option="Stylizacja dnia">
+                Stylizacja dnia
+              </button>
+              <button type="button" data-poll-option="Pomysł na wnętrze">
+                Pomysł na wnętrze
+              </button>
+              <button type="button" data-poll-option="Kulisy pracy">
+                Kulisy pracy
+              </button>
+            </div>
+            <p class="form-status" data-poll-status role="status">
+              Oddaj głos raz na tym urządzeniu.
+            </p>
+            <div class="poll-results" data-poll-results hidden></div>
+          </div>
+        </section>
+
+        <section
+          id="polecane"
+          class="section feature-section products-section"
+          aria-labelledby="products-title"
+        >
+          <div class="feature-heading">
+            <div>
+              <p class="eyebrow">Ulubione rzeczy</p>
+              <h2 id="products-title">Polecane produkty</h2>
+            </div>
+          </div>
+          <div class="product-grid">
+            <a class="product-card" href="polecane-tytuly.html"
+              ><span>01</span><strong>Książki i wiedza</strong
+              ><small>Sprawdź polecane tytuły</small></a
+            >
+            <a
+              class="product-card"
+              href="https://instagram.com/sz_sylwia14"
+              target="_blank"
+              rel="noreferrer"
+              ><span>02</span><strong>Styl i dodatki</strong
+              ><small>Zobacz inspiracje na Instagramie</small></a
+            >
+            <a class="product-card" href="#kontakt"
+              ><span>03</span><strong>Współpraca</strong
+              ><small>Zapytaj o możliwość współpracy</small></a
+            >
+          </div>
+        </section>
+
+        <section
+          id="posty"
+          class="section posts-section"
+          data-posts-section
+          hidden
+          aria-labelledby="posts-title"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Nowości</p>
+              <h2 id="posts-title">Posty Sylwii</h2>
+            </div>
+            <button
+              class="add-post-button"
+              type="button"
+              data-add-post
+              hidden
+              aria-label="Dodaj post"
+              title="Dodaj post"
+            >
+              +
+            </button>
+          </div>
+          <div class="posts-grid" data-posts-list></div>
+        </section>
+
+        <section
+          id="ciekawostki"
+          class="section letter-section"
+          aria-labelledby="letter-title"
+        >
           <div class="letter-card" data-letter-surprise>
             <span
               class="letter-glow letter-glow--one"
@@ -209,6 +473,7 @@
         <p><a href="polityka-prywatnosci.html">Polityka prywatno&#347;ci</a></p>
       </footer>
     </div>
-    <script src="app.js?v=14"></script>
+    <script src="app.js?v=32"></script>
+    <script type="module" src="firebase-auth.js"></script>
   </body>
 </html>
