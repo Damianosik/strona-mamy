@@ -490,7 +490,8 @@ function createAccountSystem() {
   settings.setAttribute("aria-label", "Otwórz ustawienia konta");
   settings.setAttribute("title", "Ustawienia konta");
   settings.setAttribute("data-account-settings", "");
-  settings.innerHTML = '<span aria-hidden="true">⚙</span>';
+  settings.innerHTML =
+    '<svg class="account-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5Z"/><path d="m19.38 13.5.06-1.5-.06-1.5 1.68-1.3-1.8-3.12-2 .8-1.3-.75-.3-2.1H12.1l-.3 2.1-1.3.75-2-.8L6.7 9.2l1.68 1.3-.06 1.5.06 1.5-1.68 1.3 1.8 3.12 2-.8 1.3.75.3 2.1h3.56l.3-2.1 1.3-.75 2 .8 1.8-3.12-1.68-1.3Z"/></svg>';
 
   const notifications = document.createElement("button");
   notifications.className = "account-notifications";
@@ -498,7 +499,7 @@ function createAccountSystem() {
   notifications.setAttribute("aria-label", "Otwórz powiadomienia");
   notifications.setAttribute("title", "Powiadomienia");
   notifications.innerHTML =
-    '<span class="account-notifications__icon" aria-hidden="true">&#128276;</span><span class="account-notifications__indicator" data-notification-indicator hidden></span>';
+    '<svg class="account-icon account-notifications__icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M18 10.25a6 6 0 0 0-12 0c0 7-2.5 7-2.5 8.5h17C20.5 17.25 18 17.25 18 10.25Z"/><path d="M9.75 21h4.5"/></svg><span class="account-notifications__indicator" data-notification-indicator hidden></span>';
   let lastReadNotificationId = "";
   try {
     lastReadNotificationId =
@@ -671,10 +672,8 @@ function createAccountSystem() {
     </div>
   `;
 
-  widget.append(
-    trigger,
-    notifications,
-    settings,
+  widget.append(trigger, notifications, settings);
+  document.body.append(
     dialog,
     resetDialog,
     settingsDialog,
@@ -1547,9 +1546,43 @@ function createMobileNavigation() {
   const dashboard = document.querySelector(".dashboard-nav");
   const toggle = document.querySelector(".mobile-nav-toggle");
   const links = document.querySelector(".dashboard-nav__links");
+  const accountTrigger = document.querySelector("[data-account-trigger]");
+  const notifications = document.querySelector(".account-notifications");
+  const settings = document.querySelector("[data-account-settings]");
 
   if (!dashboard || !toggle || !links) {
     return;
+  }
+
+  const addAccountAction = (label, icon, target) => {
+    const action = document.createElement("button");
+
+    action.className = "mobile-menu-action";
+    action.type = "button";
+    action.innerHTML = `${icon}<span>${label}</span>`;
+    action.addEventListener("click", () => {
+      target.click();
+      closeMenu();
+    });
+    links.append(action);
+  };
+
+  if (accountTrigger && notifications && settings) {
+    addAccountAction(
+      "Konto",
+      '<span class="mobile-menu-action__avatar" aria-hidden="true">S</span>',
+      accountTrigger,
+    );
+    addAccountAction(
+      "Powiadomienia",
+      '<svg class="account-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M18 10.25a6 6 0 0 0-12 0c0 7-2.5 7-2.5 8.5h17C20.5 17.25 18 17.25 18 10.25Z"/><path d="M9.75 21h4.5"/></svg>',
+      notifications,
+    );
+    addAccountAction(
+      "Ustawienia",
+      '<svg class="account-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5Z"/><path d="m19.38 13.5.06-1.5-.06-1.5 1.68-1.3-1.8-3.12-2 .8-1.3-.75-.3-2.1H12.1l-.3 2.1-1.3.75-2-.8L6.7 9.2l1.68 1.3-.06 1.5.06 1.5-1.68 1.3 1.8 3.12 2-.8 1.3.75.3 2.1h3.56l.3-2.1 1.3-.75 2 .8 1.8-3.12-1.68-1.3Z"/></svg>',
+      settings,
+    );
   }
 
   function closeMenu() {

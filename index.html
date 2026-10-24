@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=29" />
+    <link rel="stylesheet" href="styles.css?v=36" />
   </head>
   <body>
     <div class="page-shell">
@@ -23,7 +23,9 @@
           aria-expanded="false"
           aria-controls="dashboard-links"
         >
-          <span aria-hidden="true">&#9776;</span>
+          <span class="mobile-nav-toggle__icon" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
         </button>
         <div id="dashboard-links" class="dashboard-nav__links">
           <a href="#o-mnie">O mnie</a>
@@ -89,36 +91,32 @@
             <div class="section-text">
               <h2>Cześć, jestem Sylwia.</h2>
               <p>
-                Autorka profilu @sz_sylwia14. Lubię to, co robię. Dzielę się tu
-                złotymi myślami i słowami, które zatrzymują na chwilę w
+                Autorka profilu @sz_sylwia14. "Lubię to, co robię." Dzielę się
+                tu złotymi myślami i słowami, które zatrzymują na chwilę w
                 codziennym pędzie.
               </p>
               <p>
-                To miejsce powstało z potrzeby mówienia prosto i prawdziwie — o
+                To miejsce powstało z potrzeby mówienia prosto i prawdziwie o
                 życiu, wyborach, wdzięczności i sile spokojnych poranków. Bez
-                wielkich haseł, bez udawania — po prostu normalność.
+                wielkich haseł, bez udawania po prostu - normalność.
               </p>
               <p>
                 Znajdziesz tu krótkie teksty, inspiracje i przemyślenia dnia
-                codziennego. Takie, które możesz zabrać ze sobą i do których chce
-                się wracać.
+                codziennego. Takie, które możesz zabrać ze sobą i do których
+                chce się wracać.
               </p>
               <p>
                 Jeśli lubisz treści, które dają do myślenia i zostawiają coś
-                dobrego na dłużej — jesteś w dobrym miejscu.
+                dobrego na dłużej jesteś w dobrym miejscu.
               </p>
               <div class="intro-highlights">
                 <article class="info-card">
                   <h3>Złote myśli</h3>
-                  <p>
-                    Krótkie słowa i inspiracje, które zostają na dłużej.
-                  </p>
+                  <p>Krótkie słowa i inspiracje, które zostają na dłużej.</p>
                 </article>
                 <article class="info-card">
                   <h3>Prosto i prawdziwie</h3>
-                  <p>
-                    O codzienności, wdzięczności i wyborach — bez udawania.
-                  </p>
+                  <p>O codzienności, wdzięczności i wyborach — bez udawania.</p>
                 </article>
               </div>
             </div>
@@ -143,15 +141,24 @@
                 alt="Sylwia Szyja w inspirującej stylizacji"
                 loading="lazy"
               />
-              <figcaption>Zatrzymaj się na chwilę i posłuchaj siebie.</figcaption>
+              <figcaption aria-hidden="true">
+                <em
+                  >„Szczęście zależy od nas samych.”
+                  <span class="gallery-quote-author">— Arystoteles</span></em
+                >
+              </figcaption>
             </figure>
-            <figure class="gallery-card gallery-card--quote gallery-card--quote-soft">
+            <figure
+              class="gallery-card gallery-card--quote gallery-card--quote-soft"
+            >
               <span aria-hidden="true">“</span>
               <figcaption>
                 Nie musisz mieć wszystkiego poukładanego, aby iść dalej.
               </figcaption>
             </figure>
-            <figure class="gallery-card gallery-card--quote gallery-card--quote-warm">
+            <figure
+              class="gallery-card gallery-card--quote gallery-card--quote-warm"
+            >
               <span aria-hidden="true">“</span>
               <figcaption>
                 Spokojny poranek potrafi zmienić cały dzień.
@@ -185,32 +192,6 @@
               data-daily-inspiration-status
               role="status"
             ></p>
-          </div>
-        </section>
-
-        <section
-          id="ankieta"
-          class="section feature-section poll-section"
-          aria-labelledby="poll-title"
-        >
-          <div class="poll-card">
-            <p class="eyebrow">Głos obserwatorów</p>
-            <h2 id="poll-title">Co chcesz zobaczyć następnym razem?</h2>
-            <div class="poll-options" data-poll-options>
-              <button type="button" data-poll-option="Stylizacja dnia">
-                Stylizacja dnia
-              </button>
-              <button type="button" data-poll-option="Pomysł na wnętrze">
-                Pomysł na wnętrze
-              </button>
-              <button type="button" data-poll-option="Kulisy pracy">
-                Kulisy pracy
-              </button>
-            </div>
-            <p class="form-status" data-poll-status role="status">
-              Oddaj głos raz na tym urządzeniu.
-            </p>
-            <div class="poll-results" data-poll-results hidden></div>
           </div>
         </section>
 
@@ -379,7 +360,7 @@
         <p><a href="polityka-prywatnosci.html">Polityka prywatno&#347;ci</a></p>
       </footer>
     </div>
-    <script src="app.js?v=32"></script>
+    <script src="app.js?v=36"></script>
     <script type="module" src="firebase-auth.js"></script>
   </body>
 </html>
