@@ -757,6 +757,16 @@ h1 {
   line-height: 1.55;
 }
 
+.notification-state {
+  margin: 24px 0 0;
+  color: #61728a;
+  line-height: 1.55;
+}
+
+.notification-state.is-error {
+  color: #b24e4e;
+}
+
 .notification-item__remove {
   flex: 0 0 auto;
   width: 28px;
@@ -1020,20 +1030,39 @@ body.dark-theme .feature-nav a:hover {
   align-items: center;
   justify-content: center;
   padding: 28px;
-  background: linear-gradient(145deg, #6f6bff, #5dbeff);
+  isolation: isolate;
+  background: #e6ddd1;
+}
+
+.gallery-card--quote-soft {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.72), transparent 29%),
+    linear-gradient(145deg, #52667f, #2d4058);
+}
+
+.gallery-card--quote-warm {
+  background:
+    radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.58), transparent 29%),
+    linear-gradient(145deg, #b88868, #765042);
 }
 
 .gallery-card--quote span {
   position: absolute;
-  top: 25px;
-  right: 26px;
+  top: 8px;
+  right: 20px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 2.2rem;
+  font-family: Georgia, serif;
+  font-size: 5.5rem;
+  line-height: 1;
 }
 
 .gallery-card--quote figcaption {
   position: static;
-  font-size: 1.25rem;
+  max-width: 13ch;
+  font-family: Georgia, serif;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.35;
   text-shadow: none;
 }
 
@@ -1099,11 +1128,17 @@ body.dark-theme .feature-nav a:hover {
 .contact-layout h2, .poll-card h2, .daily-inspiration-card h2 { margin: 0; }
 .contact-layout p:not(.eyebrow) { margin: 14px 0 0; color: #b8c8dc; line-height: 1.65; }
 
-.contact-layout { display: grid; grid-template-columns: 0.8fr 1.1fr; gap: 42px; }
-.contact-form { display: grid; gap: 12px; }
-.contact-form .account-field { margin-top: 0; color: #dce7f6; }
-.contact-form .account-field input, .contact-form .account-field textarea { border-color: rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.1); color: #ffffff; }
-.contact-form .account-field input::placeholder, .contact-form .account-field textarea::placeholder { color: #b8c8dc; }
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 680px);
+  justify-content: center;
+  gap: 28px;
+  text-align: center;
+}
+.contact-gmail-button {
+  justify-self: center;
+  min-width: min(100%, 280px);
+}
 .form-status { min-height: 1.4em; margin: 4px 0; color: #a9d8ff; }
 
 .poll-card { max-width: 760px; margin: 0 auto; text-align: center; }
@@ -1116,7 +1151,27 @@ body.dark-theme .feature-nav a:hover {
 
 .daily-inspiration-card { background: linear-gradient(135deg, #6f6bff, #5dbeff); text-align: center; }
 .daily-inspiration-card h2 { max-width: 720px; margin: 0 auto; font-size: clamp(1.5rem, 3vw, 2.3rem); line-height: 1.25; }
-.daily-inspiration-card p:last-child { margin: 18px 0 0; color: rgba(255, 255, 255, 0.78); }
+.daily-inspiration-card [data-daily-inspiration-source] { margin: 18px 0 0; color: rgba(255, 255, 255, 0.78); }
+.daily-inspiration-actions { display: flex; justify-content: center; margin-top: 24px; }
+.daily-inspiration-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: rgba(18, 32, 58, 0.18);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+.daily-inspiration-save:hover { background: rgba(18, 32, 58, 0.36); transform: translateY(-2px); }
+.daily-inspiration-save span:first-child { font-size: 1.3rem; line-height: 1; }
+.daily-inspiration-save.is-saved { background: #ffffff; color: #485bd6; }
+.daily-inspiration-save.is-saved span:first-child { color: #e1587e; }
+.daily-inspiration-status { min-height: 1.4em; margin: 12px 0 0; color: rgba(255, 255, 255, 0.78); font-size: 0.88rem; }
 
 .planner-form { display: grid; grid-template-columns: 180px 1fr auto; gap: 12px; }
 .planner-form input,
@@ -1202,6 +1257,8 @@ body.dark-theme .notification-item {
 
 body.dark-theme .notification-item strong { color: #eef4ff; }
 body.dark-theme .notification-item p { color: #aebed4; }
+body.dark-theme .notification-state { color: #aebed4; }
+body.dark-theme .notification-state.is-error { color: #ff9ba8; }
 
 @media (max-width: 560px) {
 }
@@ -1258,7 +1315,7 @@ body:has(dialog:modal) {
 
 .analytics-summary {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 12px;
   margin: 24px 0 28px;
 }
@@ -1903,9 +1960,10 @@ body.dark-theme .admin-card__header p {
 
 .intro .section-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  align-items: start;
+  grid-template-columns: minmax(0, 800px);
+  gap: clamp(40px, 6vw, 76px);
+  align-items: center;
+  justify-content: center;
 }
 
 .section-text h2 {
@@ -1921,7 +1979,26 @@ body.dark-theme .admin-card__header p {
 
 .section-cards {
   display: grid;
-  gap: 20px;
+  justify-items: center;
+}
+
+.intro-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.intro-highlights .info-card {
+  padding: 22px;
+}
+
+.intro-photo {
+  display: block;
+  width: min(100%, 355px);
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center top;
 }
 
 .info-card {
@@ -2863,6 +2940,11 @@ body.privacy-consent-open {
   .section-cards,
   .stats {
     gap: 14px;
+  }
+  .intro-highlights {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 22px;
   }
   .instagram-heading h2 {
     font-size: clamp(1.8rem, 10vw, 2.2rem);

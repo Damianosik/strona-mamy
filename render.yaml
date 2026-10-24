@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: strona-mamy-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: FIREBASE_STORAGE_BUCKET
+        value: strona-mamy-146b5.firebasestorage.app
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://sylwiaszyja.pl,https://www.sylwiaszyja.pl

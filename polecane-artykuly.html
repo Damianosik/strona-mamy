@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Polecane artykuły | Sylwia Szyja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="Sylwia.jpg" />
+    <link rel="stylesheet" href="styles.css?v=29" />
+  </head>
+  <body class="page-ready">
+    <script>
+      try {
+        document.body.classList.toggle(
+          "dark-theme",
+          window.localStorage.getItem("sylwia-theme-preference") === "dark",
+        );
+      } catch (error) {
+        console.warn("Nie udało się odczytać ustawienia motywu:", error);
+      }
+    </script>
+    <div class="page-shell">
+      <header class="books-header">
+        <a class="back-link" href="index.html">← Wróć na stronę główną</a>
+        <p class="eyebrow">Czytelnia inspiracji</p>
+        <h1>Polecane artykuły</h1>
+        <p class="books-intro">Wybrane artykuły, do których warto zajrzeć.</p>
+      </header>
+
+      <main>
+        <section class="books-section" aria-label="Lista polecanych artykułów">
+          <ol class="books-list">
+            <li>
+              <span class="book-title">Krzem</span>
+              <span class="book-author"
+                >Artykuł o krzemie jako składniku mineralnym organizmu.</span
+              >
+              <a
+                class="book-link"
+                href="https://www.witaminaiziolo.pl/pl/n/KRZEM-PIERWIASTEK-ZDROWIA-I-ZYCIA-CZLOWIEKA/49"
+                target="_blank"
+                rel="noreferrer"
+                >Przeczytaj artykuł</a
+              >
+            </li>
+            <li>
+              <span class="book-title">Kolagen</span>
+              <span class="book-author"
+                >Artykuł o kolagenie, jego rodzajach oraz obecności w
+                organizmie.</span
+              >
+              <a
+                class="book-link"
+                href="https://www.witaminaiziolo.pl/pl/n/Kolagen-kluczowy-skladnik-zdrowia-i-urody/145"
+                target="_blank"
+                rel="noreferrer"
+                >Przeczytaj artykuł</a
+              >
+            </li>
+          </ol>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

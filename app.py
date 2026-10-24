@@ -17,7 +17,15 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger("strona-mamy-api")
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "https://sylwiaszyja.pl,https://www.sylwiaszyja.pl",
+    ).split(",")
+    if origin.strip()
+]
+CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
 
 def initialize_firebase():
@@ -332,6 +340,18 @@ def analytics():
 
     database = firestore.client()
     summary = database.collection("site_analytics").document("summary").get().to_dict() or {}
+    user_count = 0
+    user_page = auth.list_users()
+    while user_page:
+        user_count += len(user_page.users)
+        if not user_page.next_page_token:
+            break
+        user_page = auth.list_users(page_token=user_page.next_page_token)
+
+    post_count = sum(1 for _ in database.collection("posts").stream())
+    notification_count = sum(
+        1 for _ in database.collection("notifications").stream()
+    )
     visitors = []
     for document in (
         database.collection("site_visitors")
@@ -365,6 +385,9 @@ def analytics():
     return jsonify({
         "success": True,
         "views": summary.get("views", 0),
+        "users": user_count,
+        "posts": post_count,
+        "notifications": notification_count,
         "accounts": list(accounts.values()),
         "guests": guests,
     })
@@ -408,7 +431,10 @@ def notifications():
     return jsonify({"success": True, "notifications": result})
 
 
+initialize_firebase()
+
+
 if __name__ == "__main__":
-    initialize_firebase()
-    logger.info("Serwer Flask działa na http://127.0.0.1:5000")
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    port = int(os.getenv("PORT", "5000"))
+    logger.info("Serwer Flask działa na porcie %s", port)
+    app.run(host="0.0.0.0", port=port)

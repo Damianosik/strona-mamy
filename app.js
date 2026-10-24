@@ -1,9 +1,13 @@
 const enterLink = document.querySelector(".enter-link");
-const API_URL = "http://127.0.0.1:5000";
+const API_URL =
+  window.location.hostname === "sylwiaszyja.pl" ||
+  window.location.hostname === "www.sylwiaszyja.pl"
+    ? "https://api.sylwiaszyja.pl"
+    : "http://127.0.0.1:5000";
 const ADMIN_EMAIL = "sylwia.szyja14@gmail.com";
 const privacyChoiceKey = "sylwia-privacy-choice";
 const themePreferenceKey = "sylwia-theme-preference";
-const notificationReadKey = "sylwia-welcome-notification-read-v2";
+const notificationReadKey = "sylwia-last-read-notification-id-v1";
 
 function getThemePreference() {
   try {
@@ -145,54 +149,6 @@ function createBubbleStream() {
   });
 
   document.body.insertBefore(stream, document.body.firstChild);
-}
-
-async function loadPublishedPosts() {
-  const section = document.querySelector("[data-posts-section]");
-  const list = document.querySelector("[data-posts-list]");
-  if (!section || !list) {
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/posts`);
-    const data = await response.json();
-    if (!response.ok || !data.success || !Array.isArray(data.posts)) {
-      return;
-    }
-
-    if (!data.posts.length) {
-      return;
-    }
-
-    list.replaceChildren();
-    data.posts.forEach(({ title, content, imageUrl }) => {
-      const article = document.createElement("article");
-      const heading = document.createElement("h3");
-      const author = document.createElement("p");
-      const text = document.createElement("p");
-
-      article.className = "post-card";
-      heading.textContent = title;
-      author.className = "post-card__author";
-      author.textContent = "## sz_sylwia14";
-      text.textContent = content;
-      article.append(heading, author);
-      if (imageUrl) {
-        const image = document.createElement("img");
-        image.src = imageUrl;
-        image.alt = title;
-        image.loading = "lazy";
-        article.append(image);
-      }
-      article.append(text);
-      list.append(article);
-    });
-    section.dataset.hasPosts = "true";
-    section.hidden = false;
-  } catch (error) {
-    console.warn("Nie udało się pobrać postów:", error);
-  }
 }
 
 function createReadingProgress() {
@@ -543,14 +499,14 @@ function createAccountSystem() {
   notifications.setAttribute("title", "Powiadomienia");
   notifications.innerHTML =
     '<span aria-hidden="true">&#128276;</span><b data-notification-count aria-label="Nieprzeczytane powiadomienia"></b>';
-  let notificationWasRead = false;
+  let lastReadNotificationId = "";
   try {
-    notificationWasRead =
-      window.localStorage.getItem(notificationReadKey) === "true";
+    lastReadNotificationId =
+      window.localStorage.getItem(notificationReadKey) || "";
   } catch {
-    notificationWasRead = false;
+    lastReadNotificationId = "";
   }
-  notifications.classList.toggle("has-unread", !notificationWasRead);
+  notifications.classList.remove("has-unread");
 
   const notificationsDialog = document.createElement("dialog");
   notificationsDialog.className = "account-dialog notifications-dialog";
@@ -561,10 +517,7 @@ function createAccountSystem() {
       <p class="eyebrow">Centrum informacji</p>
       <h2 id="notifications-title">Powiadomienia</h2>
       <div data-notifications-list>
-        <article class="notification-item">
-          <span class="notification-item__icon" aria-hidden="true">✦</span>
-          <div><strong>Witaj na stronie</strong><p>Miło Cię widzieć. Sprawdź swoje konto i ustawienia.</p></div>
-        </article>
+        <p class="notification-state">Ładowanie powiadomień…</p>
       </div>
     </div>
   `;
@@ -623,7 +576,13 @@ function createAccountSystem() {
         </div>
       </section>
       <section class="settings-section analytics-section" data-settings-section="analytics" hidden>
-        <div class="analytics-summary"><div><span>Wyświetlenia</span><strong data-analytics-views>0</strong></div><div><span>Odwiedzający</span><strong data-analytics-visitor-count>0</strong></div></div>
+        <div class="analytics-summary">
+          <div><span>Użytkownicy</span><strong data-analytics-users>0</strong></div>
+          <div><span>Posty</span><strong data-analytics-posts>0</strong></div>
+          <div><span>Powiadomienia</span><strong data-analytics-notifications>0</strong></div>
+          <div><span>Wyświetlenia</span><strong data-analytics-views>0</strong></div>
+          <div><span>Odwiedzający</span><strong data-analytics-visitor-count>0</strong></div>
+        </div>
         <h3>Historia po Gmailu</h3>
         <div class="analytics-list" data-analytics-accounts></div>
         <h3>Goście anonimowi</h3>
@@ -753,8 +712,6 @@ function createAccountSystem() {
   const notificationCount = notifications.querySelector(
     "[data-notification-count]",
   );
-  const addPostButton = document.querySelector("[data-add-post]");
-  const postsSection = document.querySelector("[data-posts-section]");
   const adminPanelTab = settingsDialog.querySelector("[data-admin-panel-tab]");
   const adminPanelSection = settingsDialog.querySelector(
     '[data-settings-section="admin"]',
@@ -763,6 +720,11 @@ function createAccountSystem() {
     "[data-admin-analytics-tab]",
   );
   const analyticsViews = settingsDialog.querySelector("[data-analytics-views]");
+  const analyticsUsers = settingsDialog.querySelector("[data-analytics-users]");
+  const analyticsPosts = settingsDialog.querySelector("[data-analytics-posts]");
+  const analyticsNotifications = settingsDialog.querySelector(
+    "[data-analytics-notifications]",
+  );
   const analyticsVisitorCount = settingsDialog.querySelector(
     "[data-analytics-visitor-count]",
   );
@@ -783,7 +745,7 @@ function createAccountSystem() {
     "[data-admin-user-message]",
   );
   const adminPostList = settingsDialog.querySelector("[data-admin-post-list]");
-  notificationCount.hidden = notificationWasRead;
+  notificationCount.hidden = true;
   let authApi = window.firebaseAccount;
   let currentUser = null;
   let isRegistering = false;
@@ -806,6 +768,9 @@ function createAccountSystem() {
         throw new Error(data.error || "Nie udało się pobrać statystyk.");
       }
       analyticsViews.textContent = String(data.views || 0);
+      analyticsUsers.textContent = String(data.users || 0);
+      analyticsPosts.textContent = String(data.posts || 0);
+      analyticsNotifications.textContent = String(data.notifications || 0);
       analyticsVisitorCount.textContent = String(
         (data.accounts?.length || 0) + (data.guests?.length || 0),
       );
@@ -870,7 +835,7 @@ function createAccountSystem() {
       if (!response.ok || !result?.success) {
         throw new Error(result?.error || "Nie udało się usunąć posta.");
       }
-      await Promise.all([loadAdminPosts(), loadPublishedPosts()]);
+      await loadAdminPosts();
     } catch (error) {
       renderAdminPostMessage(error.message, true);
     }
@@ -1005,6 +970,36 @@ function createAccountSystem() {
     return String(message).replace(/^Invalid Date:\s*/, "Plan publikacji: ");
   }
 
+  function getNotificationDeliveryError(error) {
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      return "Nie można połączyć się z serwerem powiadomień. Spróbuj ponownie za chwilę.";
+    }
+
+    return error instanceof Error
+      ? error.message
+      : "Nie udało się wysłać powiadomienia.";
+  }
+
+  function updateNotificationIndicator(items) {
+    const readIndex = items.findIndex(
+      (notification) => notification.id === lastReadNotificationId,
+    );
+    const unreadCount = readIndex === -1 ? items.length : readIndex;
+
+    notificationCount.textContent = String(unreadCount);
+    notificationCount.hidden = unreadCount === 0;
+    notifications.classList.toggle("has-unread", unreadCount > 0);
+  }
+
+  function renderNotificationState(text, isError = false) {
+    const state = document.createElement("p");
+
+    state.className = "notification-state";
+    state.classList.toggle("is-error", isError);
+    state.textContent = text;
+    notificationList.replaceChildren(state);
+  }
+
   async function deleteNotification(notification) {
     if (!isAdminSession()) {
       return;
@@ -1034,9 +1029,11 @@ function createAccountSystem() {
       const response = await fetch(`${API_URL}/notifications`);
       const data = await response.json();
       if (!response.ok || !data.success || !Array.isArray(data.notifications)) {
-        return;
+        throw new Error("Serwer zwrócił nieprawidłową odpowiedź.");
       }
       if (!data.notifications.length) {
+        renderNotificationState("Nie masz jeszcze żadnych powiadomień.");
+        updateNotificationIndicator([]);
         return;
       }
 
@@ -1050,6 +1047,7 @@ function createAccountSystem() {
         const text = document.createElement("p");
 
         item.className = "notification-item";
+        item.dataset.notificationId = notification.id;
         icon.className = "notification-item__icon";
         icon.setAttribute("aria-hidden", "true");
         icon.textContent = "✦";
@@ -1072,10 +1070,12 @@ function createAccountSystem() {
         }
         notificationList.append(item);
       });
-      notificationCount.textContent = String(data.notifications.length);
-      notificationCount.hidden = notificationWasRead;
-      notifications.classList.toggle("has-unread", !notificationWasRead);
+      updateNotificationIndicator(data.notifications);
     } catch (error) {
+      renderNotificationState(
+        "Nie udało się pobrać powiadomień. Spróbuj ponownie za chwilę.",
+        true,
+      );
       console.warn("Nie udało się pobrać powiadomień:", error);
     }
   }
@@ -1089,13 +1089,11 @@ function createAccountSystem() {
     const session = currentUser;
     const isAdmin = isAdminSession();
     settings.hidden = !isAdmin;
-    addPostButton.hidden = !isAdmin;
     adminPanelTab.hidden = !isAdmin;
     analyticsTab.hidden = !isAdmin;
     if (!isAdmin) {
       adminPanelSection.hidden = true;
     }
-    postsSection.hidden = !isAdmin && postsSection.dataset.hasPosts !== "true";
     form.hidden = Boolean(session);
     switchButton.hidden = Boolean(session);
     resetButton.hidden = Boolean(session) || isRegistering;
@@ -1147,10 +1145,19 @@ function createAccountSystem() {
   notifications.addEventListener("click", async () => {
     await loadNotifications();
     notificationsDialog.showModal();
+    const newestNotification = notificationList.querySelector(
+      ".notification-item",
+    );
+    const newestNotificationId = newestNotification?.dataset.notificationId;
+    if (newestNotificationId) {
+      lastReadNotificationId = newestNotificationId;
+    }
     notificationCount.hidden = true;
     notifications.classList.remove("has-unread");
     try {
-      window.localStorage.setItem(notificationReadKey, "true");
+      if (newestNotificationId) {
+        window.localStorage.setItem(notificationReadKey, newestNotificationId);
+      }
     } catch {
       // Powiadomienie pozostaje odczytane w bieżącej sesji.
     }
@@ -1172,8 +1179,6 @@ function createAccountSystem() {
     postDialog.showModal();
   }
 
-  addPostButton.addEventListener("click", openPostCreator);
-
   postForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submitButton = postForm.querySelector("[type=submit]");
@@ -1193,7 +1198,7 @@ function createAccountSystem() {
       }
       postForm.reset();
       setPostMessage("Post został opublikowany.", false);
-      await Promise.all([loadPublishedPosts(), loadAdminPosts()]);
+      await loadAdminPosts();
     } catch (error) {
       setPostMessage(error.message);
     } finally {
@@ -1308,7 +1313,7 @@ function createAccountSystem() {
               renderPlans();
               plannerStatus.textContent = "Uczestnicy otrzymali powiadomienie.";
             } catch (error) {
-              plannerStatus.textContent = error.message;
+              plannerStatus.textContent = getNotificationDeliveryError(error);
               plannerStatus.classList.add("is-error");
               notify.disabled = false;
             }
@@ -1384,7 +1389,7 @@ function createAccountSystem() {
       plannerStatus.textContent =
         "Plan zapisany, a uczestnicy otrzymali powiadomienie.";
     } catch (error) {
-      plannerStatus.textContent = `Plan zapisany, ale ${error.message}`;
+      plannerStatus.textContent = `Plan zapisany, ale ${getNotificationDeliveryError(error)}`;
       plannerStatus.classList.add("is-error");
     }
   });
@@ -1609,26 +1614,20 @@ function createFeatureInteractions() {
     });
   });
 
-  const contactForm = document.querySelector("[data-contact-form]");
-  const contactStatus = document.querySelector("[data-contact-status]");
-  contactForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const data = new FormData(contactForm);
-    const name = String(data.get("name")).trim();
-    const email = String(data.get("email")).trim();
-    const message = String(data.get("message")).trim();
-    const subject = encodeURIComponent(`Współpraca od ${name}`);
-    const body = encodeURIComponent(
-      `Imię lub marka: ${name}\nE-mail: ${email}\n\n${message}`,
-    );
-    contactStatus.textContent = "Otwieram aplikację pocztową...";
-    window.location.href = `mailto:sylwia.szyja14@gmail.com?subject=${subject}&body=${body}`;
-  });
-
   const inspiration = document.querySelector("[data-daily-inspiration]");
   const inspirationSource = document.querySelector(
     "[data-daily-inspiration-source]",
   );
+  const inspirationSaveButton = document.querySelector(
+    "[data-daily-inspiration-save]",
+  );
+  const inspirationSaveLabel = document.querySelector(
+    "[data-daily-inspiration-save-label]",
+  );
+  const inspirationStatus = document.querySelector(
+    "[data-daily-inspiration-status]",
+  );
+  const savedInspirationsKey = "sylwia-saved-inspirations-v1";
   const inspirations = [
     "Zatrzymaj się na chwilę. Najlepsze kadry powstają wtedy, gdy naprawdę patrzysz.",
     "Mały detal potrafi nadać całej stylizacji własny charakter.",
@@ -1637,8 +1636,60 @@ function createFeatureInteractions() {
   ];
   if (inspiration && inspirationSource) {
     const dayIndex = Math.floor(Date.now() / 86400000) % inspirations.length;
-    inspiration.textContent = inspirations[dayIndex];
+    const dailyInspiration = inspirations[dayIndex];
+    inspiration.textContent = dailyInspiration;
     inspirationSource.textContent = "Codzienna myśl dla dobrego początku.";
+
+    const getSavedInspirations = () => {
+      try {
+        const savedInspirations = JSON.parse(
+          window.localStorage.getItem(savedInspirationsKey) || "[]",
+        );
+        return Array.isArray(savedInspirations) ? savedInspirations : [];
+      } catch (error) {
+        console.warn("Nie udało się odczytać zapisanych myśli:", error);
+        return [];
+      }
+    };
+    const updateSaveButton = () => {
+      const isSaved = getSavedInspirations().includes(dailyInspiration);
+
+      inspirationSaveButton?.classList.toggle("is-saved", isSaved);
+      inspirationSaveButton?.setAttribute("aria-pressed", String(isSaved));
+      if (inspirationSaveLabel) {
+        inspirationSaveLabel.textContent = isSaved
+          ? "Zapisano"
+          : "Zapisz myśl";
+      }
+    };
+
+    updateSaveButton();
+    inspirationSaveButton?.addEventListener("click", () => {
+      try {
+        const savedInspirations = getSavedInspirations();
+        const isSaved = savedInspirations.includes(dailyInspiration);
+        const updatedInspirations = isSaved
+          ? savedInspirations.filter((item) => item !== dailyInspiration)
+          : [...savedInspirations, dailyInspiration];
+
+        window.localStorage.setItem(
+          savedInspirationsKey,
+          JSON.stringify(updatedInspirations),
+        );
+        updateSaveButton();
+        if (inspirationStatus) {
+          inspirationStatus.textContent = isSaved
+            ? "Myśl została usunięta z zapisanych."
+            : "Myśl została zapisana.";
+        }
+      } catch (error) {
+        console.warn("Nie udało się zapisać myśli:", error);
+        if (inspirationStatus) {
+          inspirationStatus.textContent =
+            "Nie udało się zapisać myśli w tej przeglądarce.";
+        }
+      }
+    });
   }
 
   const pollKey = "sylwia-poll-choice-v1";
@@ -1709,4 +1760,3 @@ function createFeatureInteractions() {
 createFeatureInteractions();
 createAccountSystem();
 createMobileNavigation();
-loadPublishedPosts();
