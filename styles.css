@@ -686,11 +686,10 @@ h1 {
   color: #51647e;
   font-size: 1.05rem;
   cursor: pointer;
-  transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+  transition: background 180ms ease, color 180ms ease;
 }
 
 .account-settings:hover {
-  transform: rotate(18deg);
   background: #edf3ff;
   color: #5d6eff;
 }
@@ -710,26 +709,33 @@ h1 {
   cursor: pointer;
   box-shadow: none;
   margin-left: auto;
+  transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.account-notifications__icon {
+  display: block;
+  line-height: 1;
+  transform: none;
 }
 
 .account-notifications.has-unread {
   box-shadow: 0 0 0 4px rgba(230, 70, 85, 0.22), 0 14px 30px rgba(28, 44, 70, 0.28);
 }
 
-.account-notifications b {
+.account-notifications__indicator {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 4px;
+  right: 4px;
   display: block;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border: 1px solid #ffffff;
   border-radius: 50%;
   background: #e64655;
   box-shadow: 0 0 0 2px rgba(230, 70, 85, 0.18);
 }
 
-.account-notifications b[hidden] {
+.account-notifications__indicator[hidden] {
   display: none;
 }
 

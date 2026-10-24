@@ -498,7 +498,7 @@ function createAccountSystem() {
   notifications.setAttribute("aria-label", "Otwórz powiadomienia");
   notifications.setAttribute("title", "Powiadomienia");
   notifications.innerHTML =
-    '<span aria-hidden="true">&#128276;</span><b data-notification-count aria-label="Nieprzeczytane powiadomienia"></b>';
+    '<span class="account-notifications__icon" aria-hidden="true">&#128276;</span><span class="account-notifications__indicator" data-notification-indicator hidden></span>';
   let lastReadNotificationId = "";
   try {
     lastReadNotificationId =
@@ -709,8 +709,8 @@ function createAccountSystem() {
   const notificationList = notificationsDialog.querySelector(
     "[data-notifications-list]",
   );
-  const notificationCount = notifications.querySelector(
-    "[data-notification-count]",
+  const notificationIndicator = notifications.querySelector(
+    "[data-notification-indicator]",
   );
   const adminPanelTab = settingsDialog.querySelector("[data-admin-panel-tab]");
   const adminPanelSection = settingsDialog.querySelector(
@@ -745,7 +745,7 @@ function createAccountSystem() {
     "[data-admin-user-message]",
   );
   const adminPostList = settingsDialog.querySelector("[data-admin-post-list]");
-  notificationCount.hidden = true;
+  notificationIndicator.hidden = true;
   let authApi = window.firebaseAccount;
   let currentUser = null;
   let isRegistering = false;
@@ -986,8 +986,7 @@ function createAccountSystem() {
     );
     const unreadCount = readIndex === -1 ? items.length : readIndex;
 
-    notificationCount.textContent = String(unreadCount);
-    notificationCount.hidden = unreadCount === 0;
+    notificationIndicator.hidden = unreadCount === 0;
     notifications.classList.toggle("has-unread", unreadCount > 0);
   }
 
@@ -1152,7 +1151,7 @@ function createAccountSystem() {
     if (newestNotificationId) {
       lastReadNotificationId = newestNotificationId;
     }
-    notificationCount.hidden = true;
+    notificationIndicator.hidden = true;
     notifications.classList.remove("has-unread");
     try {
       if (newestNotificationId) {
